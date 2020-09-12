@@ -30,11 +30,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String choiseString = scanner.nextLine();
 
-        /*(!(country[0].CheckNumber(choiseString, false)))
-        {
-            System.out.println("Некорректное значение! Попробуйте еще раз");
-            choiseString = scanner.nextLine();
-        }*/
         choiseString = CheckNumberWithCycle(choiseString, false);
 
         int choiseInt = Integer.parseInt(choiseString);
@@ -63,22 +58,17 @@ public class Main {
     {
         Scanner scanner = new Scanner(System.in);
 
-        boolean checkCorrect = true;
         int numInt, startIndexCountry = country.length;
 
         System.out.print("Кол-во стран, которые вы хотите добавить: ");
         String numString;
 
         numString = scanner.nextLine();
-        /*while (!(country[0].CheckNumber(numString, false))) {
-            System.out.println("Некорректное значение! Попробуйте еще раз");
-            numString = scanner.nextLine();
-        }*/
         numString = CheckNumberWithCycle(numString, false);
 
         numInt = Integer.parseInt(numString);
 
-        Country[] reservCountry = new Country[0];
+        Country[] reservCountry;
         reservCountry = country;
 
         country = new Country[numInt+startIndexCountry];
@@ -150,16 +140,12 @@ public class Main {
     public static void DeleteWithPopulationLess() {
         Scanner scanner = new Scanner(System.in);
 
-        int numberDeleteInt = 0, j = 0;
+        int numberDeleteInt, j = 0;
         int[] safePosition = new int[country.length];
 
         System.out.print("Удаление стран с численностью меньше заданной\nВаше число: ");
         String numberDeleteString = scanner.nextLine();
 //Проврека на корректный ввод числа
-        /*while (!country[0].CheckNumber(numberDeleteString, false)) {
-            System.out.print("Введено некорректное значение. Попробуйте еще раз: ");
-            numberDeleteString = scanner.nextLine();
-        }*/
         numberDeleteString = CheckNumberWithCycle(numberDeleteString, false);
 //Перевод строки в число
         numberDeleteInt = Integer.parseInt(numberDeleteString);
@@ -174,7 +160,6 @@ public class Main {
 
 //Создание и запись резервного массива
         Country[] newC = new Country[j];
-        j = 0;
 
         for (int i = 0; i < newC.length; i++) {
             newC[i] = country[safePosition[i]];
@@ -192,9 +177,6 @@ public class Main {
     public static void FindWithCapital()
     {
         Scanner scanner = new Scanner(System.in);
-
-        int[] position = new int[country.length];
-        int j = 0;
 
         System.out.print("Поиск по названию столицы\nВведите столицу: ");
         String capital = scanner.nextLine();
@@ -217,12 +199,6 @@ public class Main {
 
         System.out.print("Поиск по занимаемой площади свыше указанной\nВведите площадь: ");
         String numberString = scanner.nextLine();
-
-        /*while(!country[0].CheckNumber(numberString, false))
-        {
-            System.out.print("Введено некорректное значение. Попробуйте еще раз: ");
-            numberString = scanner.nextLine();
-        }*/
         numberString = CheckNumberWithCycle(numberString, false);
 
         int numberInt = Integer.parseInt(numberString);
@@ -238,7 +214,6 @@ public class Main {
     {
         Scanner scanner = new Scanner(System.in);
 
-        int[] position = new int[country.length];
         int j = 0;
 
         System.out.print("Поиск по названию континента\nВведите континент:\n");
@@ -383,18 +358,11 @@ public class Main {
     {
         Scanner scanner = new Scanner(System.in);
 
-        while(!(country[0].CheckNumber(string, mode) || string == "Ошибка"))
+        while(!(country[0].CheckNumber(string, mode) || string.equals("Ошибка")))
         {
             System.out.println("Некорректное значение! Попробуйте еще раз");
             string = scanner.nextLine();
         }
         return string;
     }
-
-    public static void ClearCmd ()
-    {
-        for (int i = 0; i < 10; i++)
-            System.out.println("");
-    }
-
 }
