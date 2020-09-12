@@ -1,183 +1,102 @@
 package com.company;
+
+import com.company.Tools.Continent;
+
 import java.util.Scanner;
 
 public class Main {
-    private static Country[] country = new Country[0];
-    private static int num = 0;
+    private static Country[] country = new Country[8];
 
-    public static void main(String[] args)
-    {
-        CreateArray();
-        ClearCmd();
-        WriteCountry();
-        ClearCmd();
-        ShowCountry();
+    public static void main(String[] args) {
+        country[0] = new Country("Украина", "Карпаты", "4", "47000000", "603628");
+        country[1] = new Country("Австрия", "Вена", "4", "8384000", "83879");
+        country[2] = new Country("Великобритания", "Лондон", "4", "63700000", "242514");
+        country[3] = new Country("Германия", "Берлин", "4", "81844000", "357114");
+        country[4] = new Country("Дания", "Копенгаген", "4", "5600000", "43098");
+        country[5] = new Country("Бангладеш", "Дакка", "5", "161000000", "147600");
+        country[6] = new Country("Бруней", "Бандар-Сери-Бегаван", "5", "423000", "5770");
+        country[7] = new Country("Израйль", "Иерусалим", "5", "5938000", "20800");
+
+        System.out.println("Добро пожаловать в базу данных 'Государство'. Выберите действие:");
+        System.out.print(
+                        " 1. Добавление стран к уже существующей базе данных\n" +
+                        " 2. Удаление всех стран, у которых население меньше указанного\n" +
+                        " 3. Поиск по названию столицы\n" +
+                        " 4. Поиск по занимаемой площади свыше указанной\n" +
+                        " 5. Выдача сведений о государствах заданного континента с выбором способа сортировки\n\n" +
+                        "Ваш выбор: "
+        );
+
+        Scanner scanner = new Scanner(System.in);
+        String choiseString = scanner.nextLine();
+
+        /*(!(country[0].CheckNumber(choiseString, false)))
+        {
+            System.out.println("Некорректное значение! Попробуйте еще раз");
+            choiseString = scanner.nextLine();
+        }*/
+        choiseString = CheckNumberWithCycle(choiseString, false);
+
+        int choiseInt = Integer.parseInt(choiseString);
+        while (choiseInt < 1 || choiseInt > 5)
+        {
+            System.out.println("Некорректное значение! Попробуйте еще раз");
+            choiseInt = Integer.parseInt(choiseString);
+        }
+
+
+        switch (choiseInt)
+        {
+            case 1: AddCountry(); break;
+            case 2: DeleteWithPopulationLess(); break;
+            case 3: FindWithCapital(); break;
+            case 4: FindWithAreaMore(); break;
+            case 5: FindWithContinent(); break;
+        }
     }
+
 
 
     /*————————————————————Methods————————————————————*/
 
-    public static class Country
-    {
-        String name;
-        String capital;
-        enum Continent
-        {
-            Ошибка,
-            Северная_Амеика,
-            Южная_Америка,
-            Европа,
-            Азия,
-            Австралия,
-            Антарктика
-        }
-        Continent yourContinent;
-        int countPeople;
-        int area;
-
-        public void setName(String a)
-        {
-            for(int i = 0; i < a.length(); i++)
-            {
-                if (a.charAt(i) >= '0' && a.charAt(i) <= '9')
-                {
-                    name = "Ошибка";
-                    break;
-                }
-            }
-
-            if (name != "Ошибка")
-                name = a;
-        }
-
-        public void setCapital(String a)
-        {
-            for(int i = 0; i < a.length(); i++)
-            {
-                if (a.charAt(i) >= '0' && a.charAt(i) <= '9')
-                {
-                    capital = "Ошибка";
-                    break;
-                }
-            }
-
-            if (capital != "Ошибка")
-                capital = a;
-        }
-
-        public void setContinent(String a)
-        {
-            int choise = 0;
-
-            for(int i = 0; i < a.length(); i++)
-            {
-                if (a.charAt(i) < '1' || a.charAt(i) > '7')
-                {
-                    yourContinent = Continent.Ошибка;
-                    break;
-                }
-            }
-
-            if(yourContinent != Continent.Ошибка)
-            {
-                choise = Integer.parseInt(a);
-
-                switch (choise)
-                {
-                    case 1: yourContinent = Continent.Северная_Амеика; break;
-                    case 2: yourContinent = Continent.Южная_Америка; break;
-                    case 3: yourContinent = Continent.Европа; break;
-                    case 4: yourContinent = Continent.Азия; break;
-                    case 5: yourContinent = Continent.Австралия; break;
-                    case 6: yourContinent = Continent.Антарктика; break;
-                }
-            }
-        }
-
-        public void setCountPeople(String a)
-        {
-            for(int i = 0; i < a.length(); i++)
-            {
-                if (a.charAt(i) < '0' || a.charAt(i) > '9')
-                {
-                    countPeople = 0;
-                    break;
-                }
-            }
-
-            if (countPeople != 0)
-                countPeople = Integer.parseInt(a);
-        }
-
-        public void setArea(String a)
-        {
-            for(int i = 0; i < a.length(); i++)
-            {
-                if (a.charAt(i) < '0' || a.charAt(i) > '9')
-                {
-                    area = 0;
-                    break;
-                }
-            }
-
-            if(area != 0)
-                area = Integer.parseInt(a);
-        }
-
-        Country()
-        {
-            this.name = "";
-            this.capital = "";
-            this.countPeople = 0;
-            this.area = 0;
-        }
-    }
-
-    public static void CreateArray()
+    public static void AddCountry()
     {
         Scanner scanner = new Scanner(System.in);
+
         boolean checkCorrect = true;
+        int numInt, startIndexCountry = country.length;
 
         System.out.print("Кол-во стран, которые вы хотите добавить: ");
-        String numString = "";
+        String numString;
 
-        while(true)
-        {
+        numString = scanner.nextLine();
+        /*while (!(country[0].CheckNumber(numString, false))) {
+            System.out.println("Некорректное значение! Попробуйте еще раз");
             numString = scanner.nextLine();
+        }*/
+        numString = CheckNumberWithCycle(numString, false);
 
-            for(int i=0; i < numString.length(); i++)
-            {
-                if(numString.charAt(i) < '0' || numString.charAt(i) > '9')
-                {
-                    checkCorrect = false;
-                    System.out.println("Некорректное значение! Попробуйте еще раз");
-                    break;
-                }
-            }
+        numInt = Integer.parseInt(numString);
 
-            if(checkCorrect)
-                break;
+        Country[] reservCountry = new Country[0];
+        reservCountry = country;
 
-            checkCorrect = true;
+        country = new Country[numInt+startIndexCountry];
+
+        for (int i = 0; i < country.length-numInt; i++)
+        {
+            country[i] = reservCountry[i];
         }
 
-
-        num = Integer.parseInt(numString);
-
-        country = new Country[num];
-
-        for(int i = 0; i < num; i++)
+        for (int i = startIndexCountry; i < country.length; i++ )
         {
             country[i] = new Country();
         }
-    }
 
-    public static void WriteCountry() {
-        for (int i = 0; i < num; i++)
+        for (int i = startIndexCountry; i < country.length; i++)
         {
-            Scanner scanner = new Scanner(System.in);
 
-            System.out.println("———Страна №" + (i+1) + "———");
+            System.out.println("———Страна №" + (i + 1) + "———");
             System.out.print("Введите название страны: ");
             String name = scanner.nextLine();
 
@@ -185,7 +104,10 @@ public class Main {
             String capital = scanner.nextLine();
 
             System.out.print("Введите название континента:\n");
-            System.out.print(" 1. Северная Америка \n 2. Южная Америка \n 3. Европа \n 4. Азия \n 5. Австралия  \n 6. Антарктика \n Ваш выбор: ");
+            for (int j = 1; j < Continent.values().length; j++)
+                System.out.println(" " + j + " " + Continent.values()[j]);
+
+            System.out.print("Ваш выбор: ");
             String continent = scanner.nextLine();
 
             System.out.print("Введите количество населения: ");
@@ -195,31 +117,283 @@ public class Main {
             String area = scanner.nextLine();
             System.out.println("");
 
-            country[i].setName(name);
-            country[i].setCapital(capital);
-            country[i].setContinent(continent);
-            country[i].setCountPeople(countPeople);
-            country[i].setArea(area);
+            country[i] = new Country(name, capital, continent, countPeople, area);
         }
+
+        ShowCountry();
     }
 
-    public static void ShowCountry()
-    {
-        for(int i = 0; i < num; i++)
+    public static void ShowCountry() {
+        for (int i = 0; i < country.length; i++)
         {
-            System.out.println("———Страна №" + (i+1) + "———");
+            System.out.println("———Страна №" + (i + 1) + "———");
             System.out.println("Страна: " + country[i].name);
             System.out.println("Столица: " + country[i].capital);
-            System.out.println("Континент: " + country[i].yourContinent);
+            System.out.println("Континент: " + country[i].continent);
             System.out.println("Население: " + country[i].countPeople);
             System.out.println("Площадь: " + country[i].area);
             System.out.println("");
         }
     }
 
-    public static void ClearCmd()
+    public static void  ShowCountry(Country[] sortingCounrty, int number)
     {
-        for(int i = 0; i < 10; i++)
+            System.out.println("———Страна №" + (number + 1) + "———");
+            System.out.println("Страна: " + sortingCounrty[number].name);
+            System.out.println("Столица: " + sortingCounrty[number].capital);
+            System.out.println("Континент: " + sortingCounrty[number].continent);
+            System.out.println("Население: " + sortingCounrty[number].countPeople);
+            System.out.println("Площадь: " + sortingCounrty[number].area);
+            System.out.println("");
+    }
+
+    public static void DeleteWithPopulationLess() {
+        Scanner scanner = new Scanner(System.in);
+
+        int numberDeleteInt = 0, j = 0;
+        int[] safePosition = new int[country.length];
+
+        System.out.print("Удаление стран с численностью меньше заданной\nВаше число: ");
+        String numberDeleteString = scanner.nextLine();
+//Проврека на корректный ввод числа
+        /*while (!country[0].CheckNumber(numberDeleteString, false)) {
+            System.out.print("Введено некорректное значение. Попробуйте еще раз: ");
+            numberDeleteString = scanner.nextLine();
+        }*/
+        numberDeleteString = CheckNumberWithCycle(numberDeleteString, false);
+//Перевод строки в число
+        numberDeleteInt = Integer.parseInt(numberDeleteString);
+
+
+//Запись кол-ва элементов, котрых нужно удалить и их кординатов
+        for (int i = 0; i < country.length; i++) {
+            if ((country[i].countPeople > numberDeleteInt)) {
+                safePosition[j++] = i;
+            }
+        }
+
+//Создание и запись резервного массива
+        Country[] newC = new Country[j];
+        j = 0;
+
+        for (int i = 0; i < newC.length; i++) {
+            newC[i] = country[safePosition[i]];
+        }
+
+//Создание и запись основного массива
+        country = new Country[newC.length];
+        for (int i = 0; i < newC.length; i++) {
+            country[i] = newC[i];
+        }
+
+        ShowCountry();
+    }
+
+    public static void FindWithCapital()
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        int[] position = new int[country.length];
+        int j = 0;
+
+        System.out.print("Поиск по названию столицы\nВведите столицу: ");
+        String capital = scanner.nextLine();
+        capital = capital.substring(0, 1).toUpperCase() + capital.substring(1);
+
+
+        for (int i = 0; i < country.length; i++)
+        {
+            if(country[i].capital.contains(capital))
+            {
+                System.out.println("Результат: ");
+                ShowCountry(country,i);
+            }
+        }
+    }
+
+    public static void FindWithAreaMore()
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Поиск по занимаемой площади свыше указанной\nВведите площадь: ");
+        String numberString = scanner.nextLine();
+
+        /*while(!country[0].CheckNumber(numberString, false))
+        {
+            System.out.print("Введено некорректное значение. Попробуйте еще раз: ");
+            numberString = scanner.nextLine();
+        }*/
+        numberString = CheckNumberWithCycle(numberString, false);
+
+        int numberInt = Integer.parseInt(numberString);
+
+        for (int i = 0; i < country.length; i++)
+        {
+            if(country[i].area > numberInt)
+                ShowCountry(country,i);
+        }
+    }
+
+    public static void FindWithContinent()
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        int[] position = new int[country.length];
+        int j = 0;
+
+        System.out.print("Поиск по названию континента\nВведите континент:\n");
+        for (int i = 1; i < Continent.values().length; i++)
+            System.out.println(" " + i + ". " + Continent.values()[i]);
+
+        String numberContinentString = scanner.nextLine();
+        numberContinentString = CheckNumberWithCycle(numberContinentString, true);
+
+        int numberContinentInt = Integer.parseInt(numberContinentString);
+
+        System.out.print("Выберите способ сортировки: \n");
+        System.out.println(" 1. По названию\n 2. По площади\n 3. По населению\n");
+        System.out.println("Ваш выбор: ");
+
+        String numberSortingString = scanner.nextLine();
+        numberSortingString = CheckNumberWithCycle(numberSortingString, true);
+
+        int numberSortingInt = Integer.parseInt(numberSortingString);
+
+        for (int i = 0; i < country.length; i++)
+        {
+            if(country[i].continent == Continent.values()[numberContinentInt])
+            {
+                j++;
+            }
+        }
+
+        Country[] sortingCountry = new Country[j];
+        j = 0;
+
+        for (int i = 0; i < country.length; i++)
+        {
+            if(country[i].continent == Continent.values()[numberContinentInt])
+            {
+                sortingCountry[j++] = country[i];
+            }
+        }
+
+        switch (numberSortingInt)
+        {
+            case 1: SortingByName(sortingCountry); break;
+            case 2: SortingByArea(sortingCountry); break;
+            case 3: SortingByCountPeople(sortingCountry); break;
+        }
+    }
+
+    public static void SortingByName(Country[] sortingCountry)
+    {
+        Country reservCountry = new Country();
+
+        for (int i = 0; i < sortingCountry.length; i++)
+        {
+            if(i != (sortingCountry.length-1))
+                if(sortingCountry[i].name.charAt(0) > sortingCountry[i+1].name.charAt(0))
+                {
+                    reservCountry = sortingCountry[i];
+                    sortingCountry[i] = sortingCountry[i+1];
+                    sortingCountry[i+1] = reservCountry;
+                }
+            ShowCountry(sortingCountry,i);
+        }
+    }
+
+    public static void SortingByArea(Country[] sortingCountry)
+    {
+        SortingNumberArea(sortingCountry);
+
+        for (int i = 0; i < sortingCountry.length; i++)
+        {
+            ShowCountry(sortingCountry, i);
+        }
+    }
+
+    public static void SortingByCountPeople(Country[] sortingCountry)
+    {
+        SortingNumberCoutPeople(sortingCountry);
+
+        for (int i = 0; i < sortingCountry.length; i++)
+        {
+            ShowCountry(sortingCountry, i);
+        }
+    }
+
+    public static void SortingNumberArea(Country[] sortingCountry)
+    {
+        Country reservCountry = new Country();
+
+        for (int i = 0; i < sortingCountry.length; i++)
+        {
+            if (i != (sortingCountry.length - 1)) {
+                if (sortingCountry[i].area < sortingCountry[i + 1].area)
+                {
+                    reservCountry = sortingCountry[i];
+                    sortingCountry[i] = sortingCountry[i + 1];
+                    sortingCountry[i + 1] = reservCountry;
+
+
+                    for (int j = --i; j >= 0; j--) {
+                        if (sortingCountry[j].area < sortingCountry[j + 1].area)
+                        {
+                            reservCountry = sortingCountry[j];
+                            sortingCountry[j] = sortingCountry[j + 1];
+                            sortingCountry[j + 1] = reservCountry;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static void SortingNumberCoutPeople(Country[] sortingCountry)
+    {
+        Country reservCountry = new Country();
+
+        for (int i = 0; i < sortingCountry.length; i++)
+        {
+            if (i != (sortingCountry.length - 1)) {
+                if (sortingCountry[i].countPeople < sortingCountry[i + 1].countPeople)
+                {
+                    reservCountry = sortingCountry[i];
+                    sortingCountry[i] = sortingCountry[i + 1];
+                    sortingCountry[i + 1] = reservCountry;
+
+
+                    for (int j = --i; j >= 0; j--) {
+                        if (sortingCountry[j].countPeople < sortingCountry[j + 1].countPeople)
+                        {
+                            reservCountry = sortingCountry[j];
+                            sortingCountry[j] = sortingCountry[j + 1];
+                            sortingCountry[j + 1] = reservCountry;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static String CheckNumberWithCycle(String string, boolean mode)
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        while(!(country[0].CheckNumber(string, mode) || string == "Ошибка"))
+        {
+            System.out.println("Некорректное значение! Попробуйте еще раз");
+            string = scanner.nextLine();
+        }
+        return string;
+    }
+
+    public static void ClearCmd ()
+    {
+        for (int i = 0; i < 10; i++)
             System.out.println("");
     }
 
